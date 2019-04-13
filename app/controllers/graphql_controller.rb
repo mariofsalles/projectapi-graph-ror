@@ -6,9 +6,10 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     session = Session.where(token: request.headers['Authorization']).first
-    Rails.logger.info "Logged in as: \e[31m#{session&.user&.email}"
+    Rails.logger.info "Logged in as: #{session&.user&.email}"
     context = {
-      current_user: session&.user
+      current_user: session&.user,
+      session_id: session&.id
     }
     result = ProjectApiSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
