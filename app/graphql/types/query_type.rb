@@ -20,5 +20,10 @@ module Types
         user.sessions.create.token
       end
     end
+
+    field :current_user, UserType, null: true, description: 'The currently logged in user'
+    def current_user
+      context[:current_user]
+    end
   end
 end

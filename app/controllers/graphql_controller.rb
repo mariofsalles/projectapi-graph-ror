@@ -1,16 +1,20 @@
+# frozen_string_literal: true
+
 class GraphqlController < ApplicationController
   def execute
     variables = ensure_hash(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
+    session = Session.where(token: request.headers['Authorization']).first
+    Rails.logger.info "Logged in as: \e[31m#{session&.user&.email}"
     context = {
-      # Query context goes here, for example:
-      # current_user: current_user,
+      current_user: session&.user
     }
     result = ProjectApiSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
-  rescue => e
+  rescue StandardError => e
     raise e unless Rails.env.development?
+
     handle_error_in_development e
   end
 
