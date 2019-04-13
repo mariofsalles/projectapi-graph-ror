@@ -6,5 +6,9 @@ module Types
     field :id, ID, null: true
     field :name, String, null: true
     field :email, String, null: true
+
+    def self.visible?(context)
+      !!context[:current_user]
+    end
   end
 end
